@@ -16,7 +16,8 @@ std::string managedStrToNative(System::String^ sysstr)
 	using System::Runtime::InteropServices::Marshal;
 
 	IntPtr ip = Marshal::StringToHGlobalAnsi(sysstr);
-	std::string outString = static_cast<const char*>(ip.ToPointer());
+	std::string outString = static_cast<const char*>(ip.ToPointer()); 
+
 	Marshal::FreeHGlobal(ip);
 	return outString;
 }
