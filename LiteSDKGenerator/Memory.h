@@ -10,7 +10,7 @@ using namespace System::Diagnostics;
 ref class Memory
 {
 public:
-	bool Memory::Init(String^, String^);
+	bool Memory::Init();
 
 	void Close();
 

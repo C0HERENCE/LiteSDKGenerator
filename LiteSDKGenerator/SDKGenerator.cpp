@@ -12,8 +12,8 @@ std::string BuildMethodSignature(const Package::Method& m, const Package::Class&
 void SDKGenerator::DumpObjectsTxt(std::string path)
 {
 	Global::MainForm->progressBar1->Maximum = Global::Objects->GetObjectsNum();
-	std::ofstream o(path + "ObjectsDump.txt");
-	tfm::format(o, "%s\n", "By COHERENCE");
+	std::ofstream o(path + Settings::GObjectsFileName);
+	tfm::format(o, "%s\n", Settings::AuthorNotes);
 	for (int i = 0; i < Global::Objects->GetObjectsNum(); i++)
 	{
 		Global::MainForm->progressBar1->Value = i + 1;
@@ -34,7 +34,7 @@ void SDKGenerator::DumpSDK(std::string path,bool oneFile)
 
 void ProcessPackages(std::string path,bool oneFile)
 {
-	const auto sdkPath = path + "SDK";
+	const auto sdkPath = path + Settings::SDKFolderName;
 	std::unordered_map<uint64_t, Package> packageObjects;
 	Global::MainForm->progressBar1->Maximum = Global::Objects->GetObjectsNum();
 	for (int i = 0; i < Global::Objects->GetObjectsNum(); i++)
@@ -66,7 +66,7 @@ void ProcessPackages(std::string path,bool oneFile)
 	{
 		if (oneFile&&!o.is_open())
 		{
-			o.open(path + "SDK_All.cpp", std::ofstream::out | std::ofstream::app);
+			o.open(path + Settings::SDKAllFileName, std::ofstream::out | std::ofstream::app);
 		}
 		if (!oneFile)
 		{

@@ -1,8 +1,8 @@
 #include "Global.h"
 
-bool Memory::Init(String^ ProcessName, String^ ModuleName)
+bool Memory::Init()
 {
-	HWND hWnd = FindWindow("UnrealWindow", "PUBG LITE ");
+	HWND hWnd = FindWindow(Settings::WindowsClass.c_str(), Settings::WindowsCaption.c_str());
 	DWORD Pid = 0;
 	GetWindowThreadProcessId(hWnd, &Pid);
 	if (Pid == 0)
@@ -19,7 +19,7 @@ bool Memory::Init(String^ ProcessName, String^ ModuleName)
 		for (int i = 0; i < cb / sizeof(HMODULE); i++)
 		{
 			GetModuleBaseNameA(hProcess, hMods[i], szModName, MAX_PATH);
-			if (!ModuleName->CompareTo(gcnew String(szModName)))
+			if (!Settings::MoudleName.compare(szModName))
 			{
 				Global::MainForm->textBox3->Text = Pid.ToString();
 				Global::MainForm->textBox4->Text = String::Format("{0:x}", (uint64_t)hMods[i]);

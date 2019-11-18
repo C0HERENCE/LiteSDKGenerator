@@ -64,6 +64,7 @@ namespace Updates
 		{
 			return __ROL8__(v18 ^ 0x418024EB991C6A88i64, 26) ^ (__ROL8__(v18 ^ 0x418024EB991C6A88i64, 26) << 32) ^ 0xB4CF13AB94F33C3Aui64;
 		}
+		//FName
 		static int32 comparison_id(uint32 v10)
 		{
 			return __ROL4__(v10 ^ 0x52322230, 1) ^ (__ROL4__(v10 ^ 0x52322230, 1) << 16) ^ 0x1B3CE7C9;
@@ -77,5 +78,31 @@ namespace Updates
 
 namespace Settings
 {
+	static std::string ProcessName = "PUBGLite-Win64-Shipping";
+	static std::string MoudleName = "PUBGLite-Win64-Shipping.exe";
+	static std::string WindowsClass = "UnrealWindow";
+	static std::string WindowsCaption = "PUBG LITE ";
+	static std::string SDKFolderName = "PUBGLITE_SDK";
+	static std::string SDKAllFileName = "SDK_All.cpp";
+	static std::string GObjectsFileName = "ObjectsDump.txt";
+	static std::string AuthorNotes = "By COHERENCE";
+	static std::string OutPutString = 
+R"(// UField
+static const uint64 next = 0x{0:X}; // Vector.X = *Vector.Y
+// UEnum
+static const uint64 enumNames = 0x{1:X}; // ETextGender
+// UStruct
+static const uint64 superfield = 0x{2:X}; // Engine.Pawn = *Engine.Actor
+static const uint64 property_size = 0x{3:X}; // Vector = 12;
+static const uint64 children = 0x{4:X}; // Vector = *Vector.X
+// UFunction
+static const uint64 func = 0x{5:X}; // WasRecentlyRendered 0x7FF6204410A0?
+static const uint64 function_flags = 0x{6:X}; // WasRecentlyRendered = 0x54020401
+// UProperty
+static const uint64 array_dim = 0x{7:X}; // Vector.X = 1
+static const uint64 element_size = 0x{8:X}; // Vector.X = 4
+static const uint64 offset = 0x{9:X}; // Vector.Y = 4
+static const uint64 property_flag = 0x{10:X}; // Vector.Y = 0x41000205 0x180010
 
+static const uint64 uproperty_size = 0x{11:X}; // UStruct(CoreUObject.Property)=?)";
 }

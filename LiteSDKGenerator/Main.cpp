@@ -1,12 +1,15 @@
 #include "Global.h"
 #include "SDKTypes.h"
-
 using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Collections::Generic;
 using namespace System::IO;
 using namespace LiteSDKGenerator;
+
 using namespace Updates;
+using namespace Settings;
+
+
 
 std::string managedStrToNative(System::String^ sysstr);
 
@@ -16,22 +19,22 @@ std::string managedStrToNative(System::String^ sysstr)
 	using System::Runtime::InteropServices::Marshal;
 
 	IntPtr ip = Marshal::StringToHGlobalAnsi(sysstr);
-	std::string outString = static_cast<const char*>(ip.ToPointer()); 
+	std::string outString = static_cast<const char*>(ip.ToPointer());
 	Marshal::FreeHGlobal(ip);
 	return outString;
 }
+
 [STAThread]
 void Main(array<String^>^ args)
 {
-	Application::EnableVisualStyles();
 	Application::Run(Global::MainForm);
 }
 
 System::Void Main::Main_Load(System::Object^ sender, System::EventArgs^ e)
 {
-	textBox1->Text = "PUBGLite-Win64-Shipping";
-	textBox2->Text = "PUBGLite-Win64-Shipping.exe";
-	Global::GameMemory->Init(textBox1->Text,textBox2->Text);
+	textBox1->Text = ManagedStr(ProcessName);
+	textBox2->Text = ManagedStr(MoudleName);
+	Global::GameMemory->Init();
 	Global::Names->Init(Global::GameMemory->GetBase() + Off::GNames);
 	Global::Objects->Init(Global::GameMemory->GetBase() + Off::FUObjectArray);
 	Console::WriteLine("GNames: 0x{0:x}\nNamesNum: {1}", Global::Names->GetAddress(), Global::Names->GetNamesNum());
@@ -45,63 +48,60 @@ System::Void Main::Main_FormClosing(System::Object^ sender, System::Windows::For
 
 System::Void Main::btnDumpSDK_Click(System::Object^ sender, System::EventArgs^ e)
 {
+	if (!cbAll->Checked && !cbSDK->Checked && !cbGObj->Checked)
+	{
+		MessageBox::Show("Check at least one output type");
+		return;
+	}
 	if (folderBrowserDialog1->ShowDialog() == Windows::Forms::DialogResult::OK)
 	{
-		String^ dir = folderBrowserDialog1->SelectedPath + "\\SDK";
-		if (!Directory::Exists(dir))
-			Directory::CreateDirectory(dir);
-		Global::Generator->DumpSDK(managedStrToNative(dir+"\\"),false);
-		if (MessageBox::Show("Open In Explorer?", "Dump Finished", MessageBoxButtons::YesNo) == ::DialogResult::Yes)
+		std::string OutputDirectory = NativeStr(folderBrowserDialog1->SelectedPath + "\\");
+		if (cbSDK->Checked)
 		{
-			Process::Start(dir);
+			String^ sdkdir = ManagedStr(OutputDirectory + SDKFolderName);
+			if (!Directory::Exists(sdkdir))
+				Directory::CreateDirectory(sdkdir);
+			Global::Generator->DumpSDK(OutputDirectory + SDKFolderName + "\\", false);
 		}
-	}
-}
+		if (cbAll->Checked)
+		{
+			Global::Generator->DumpSDK(OutputDirectory, true);
+		}
+		if (cbGObj->Checked)
+		{
+			Global::Generator->DumpObjectsTxt(OutputDirectory);
+		}
 
-System::Void Main::btnDumpSdkOneFile_Click(System::Object^ sender, System::EventArgs^ e)
-{
-	if (folderBrowserDialog1->ShowDialog() == Windows::Forms::DialogResult::OK)
-	{
-		String^ dir = folderBrowserDialog1->SelectedPath;
-		Global::Generator->DumpSDK(managedStrToNative(dir + "\\"),true);
-		if (MessageBox::Show("Open In Explorer?", "Dump Finished", MessageBoxButtons::YesNo) == ::DialogResult::Yes)
+		if (MessageBox::Show("Show Files In Explorer?", "Dump Finished", MessageBoxButtons::YesNo) == ::DialogResult::Yes)
 		{
-			Process::Start(dir);
-		}
-	}
-}
-System::Void Main::btnDumpTxt_Click(System::Object^ sender, System::EventArgs^ e)
-{
-	if (folderBrowserDialog1->ShowDialog() == Windows::Forms::DialogResult::OK)
-	{
-		Global::Generator->DumpObjectsTxt(managedStrToNative(folderBrowserDialog1->SelectedPath+"\\"));
-		if (MessageBox::Show("Open In Explorer?", "Dump Finished", MessageBoxButtons::YesNo) == ::DialogResult::Yes)
-		{
-			Process::Start(folderBrowserDialog1->SelectedPath);
+			Process::Start(ManagedStr(OutputDirectory));
 		}
 	}
 }
 
 System::Void Main::btnTest_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	Console::WriteLine(String::Format("Name 101: {0}", gcnew String(Global::Names->GetById(101).c_str())));
+	Console::WriteLine(String::Format("Name 101: {0}", ManagedStr(Global::Names->GetById(101))));
 
 	for (int i = 0; i < 5; i++)
 	{
 		Console::WriteLine("Object Address: {0:X}", Global::Objects->GetById(i).GetAddress());
 		Console::WriteLine("Index ID: {0}", Global::Objects->GetById(i).GetIndex());
 		Console::Write("Name ID: {0} ", Global::Objects->GetById(i).GetComparisonIndex());
-		Console::WriteLine("Name: {0}", gcnew String(Global::Names->GetById(Global::Objects->GetById(i).GetComparisonIndex()).c_str()));
+		Console::WriteLine("Name: {0}", ManagedStr(Global::Names->GetById(Global::Objects->GetById(i).GetComparisonIndex())));
 		Console::Write("Class ID: {0} ", Global::Objects->GetById(i).GetClass().GetIndex());
-		Console::WriteLine("Name: {0}", gcnew String(Global::Names->GetById(Global::Objects->GetById(Global::Objects->GetById(i).GetClass().GetIndex()).GetComparisonIndex()).c_str()));
+		Console::WriteLine("Name: {0}", ManagedStr(Global::Names->GetById(Global::Objects->GetById(Global::Objects->GetById(i).GetClass().GetIndex()).GetComparisonIndex())));
 		Console::Write("Outer ID: {0} ", Global::Objects->GetById(i).GetOuter().GetIndex());
-		Console::WriteLine("Name: {0}", gcnew String(Global::Names->GetById(Global::Objects->GetById(Global::Objects->GetById(i).GetClass().GetIndex()).GetComparisonIndex()).c_str()));
+		Console::WriteLine("Name: {0}", ManagedStr(Global::Names->GetById(Global::Objects->GetById(Global::Objects->GetById(i).GetClass().GetIndex()).GetComparisonIndex())));
 		Console::WriteLine("");
 	}
 }
 
 Void Main::btnFindGName_Click(System::Object^ sender, System::EventArgs^ e)
 {
+	MessageBox::Show("Make sure you've updated them in Updates.cpp:\n"
+		+ "Off::GNames" + "\n"
+		+ "Off::chunksize");
 	Console::WriteLine("Finding static GNames from offset: {0:X}, chunksize = {1:X}", Global::GameMemory->GetBase() + Off::GNames, Off::chunksize);
 	for (int i = 0; i < 0x50000; i++)
 	{
@@ -116,8 +116,17 @@ Void Main::btnFindGName_Click(System::Object^ sender, System::EventArgs^ e)
 }
 
 
-System::Void Main::btnUpdate_Click(System::Object^ sender, System::EventArgs^ e)
+System::Void Main::btnAutoUpdate_Click(System::Object^ sender, System::EventArgs^ e)
 {
+	MessageBox::Show("Make sure you've updated them in Updates.cpp:\n"
+		+ "Off:\n"
+		+ "\\\\Main" + "\n"
+		+ "\\\\GNames" + "\n"
+		+ "\\\\UObject" + "\n"
+		+ "\\\\FName" + "\n"
+		+ "Dec:\n"
+		+ "\\\\UObject" + "\n"
+		+ "\\\\FName" + "\n");
 	std::unordered_map<std::string, uint64> searchingString;
 	searchingString.insert(std::pair<std::string, int>{"ScriptStruct CoreUObject.Vector", 0});
 	searchingString.insert(std::pair<std::string, int>("FloatProperty CoreUObject.Vector.X", 0));
@@ -146,9 +155,10 @@ System::Void Main::btnUpdate_Click(System::Object^ sender, System::EventArgs^ e)
 	}
 	for (auto p : searchingString)
 	{
-		Console::Write("Address: {0:X} ", p.second);
-		Console::WriteLine(gcnew String(p.first.c_str()));
+		//Console::Write("Address: {0:X} ", p.second);
+		//Console::WriteLine(ManagedStr(p.first));
 	}
+	Console::WriteLine("Auto Update Result:\n");
 	int next, enumNames, array_dim, element_size, offset, property_flag, superfield, property_size, children, function_flags, func, uproperty_size;
 	for (int i = 0x20; i < 0x50; i += 4)
 	{
@@ -268,24 +278,5 @@ System::Void Main::btnUpdate_Click(System::Object^ sender, System::EventArgs^ e)
 		}
 	}
 	uproperty_size = Global::GameMemory->Read32(searchingString["Class CoreUObject.Property"] + property_size);
-	String^ printString = gcnew String(R"(
-// UField
-static const uint64 next = 0x{0:X}; // Vector.X = *Vector.Y
-// UEnum
-static const uint64 enumNames = 0x{1:X}; // ETextGender
-// UStruct
-static const uint64 superfield = 0x{2:X}; // Engine.Pawn = *Engine.Actor
-static const uint64 property_size = 0x{3:X}; // Vector = 12;
-static const uint64 children = 0x{4:X}; // Vector = *Vector.X
-// UFunction
-static const uint64 func = 0x{5:X}; // WasRecentlyRendered 0x7FF6204410A0?
-static const uint64 function_flags = 0x{6:X}; // WasRecentlyRendered = 0x54020401
-// UProperty
-static const uint64 array_dim = 0x{7:X}; // Vector.X = 1
-static const uint64 element_size = 0x{8:X}; // Vector.X = 4
-static const uint64 offset = 0x{9:X}; // Vector.Y = 4
-static const uint64 property_flag = 0x{10:X}; // Vector.Y = 0x41000205 0x180010
-
-static const uint64 uproperty_size = 0x{11:X}; // UStruct(CoreUObject.Property)=?)");
-	Console::WriteLine(printString,next,enumNames,superfield,property_size,children,func,function_flags,array_dim,element_size,offset,property_flag,uproperty_size);
+	Console::Write(ManagedStr(OutPutString),next,enumNames,superfield,property_size,children,func,function_flags,array_dim,element_size,offset,property_flag,uproperty_size);
 }
