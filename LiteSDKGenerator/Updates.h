@@ -74,3 +74,8 @@ namespace Updates
 		}
 	};
 }
+
+namespace Settings
+{
+
+}
