@@ -2,34 +2,38 @@
 
 bool Memory::Init(String^ ProcessName, String^ ModuleName)
 {
-	array<Process^>^ arrayProcess = Process::GetProcessesByName(ProcessName);
-	for each (Process ^ p in arrayProcess)
+	HWND hWnd = FindWindow("UnrealWindow", "PUBG LITE ");
+	DWORD Pid = 0;
+	GetWindowThreadProcessId(hWnd, &Pid);
+	if (Pid == 0)
 	{
-		hProcess = OpenProcess(PROCESS_ALL_ACCESS, false, p->Id);
-		HMODULE hMods[512];
-		DWORD cb;
-		if (EnumProcessModulesEx(hProcess, hMods, sizeof(hMods), &cb, LIST_MODULES_ALL))
+		Console::WriteLine("Process not found");
+		return false;
+	}
+	hProcess = OpenProcess(PROCESS_ALL_ACCESS, false, Pid);
+	HMODULE hMods[512];
+	DWORD cb;
+	if (EnumProcessModulesEx(hProcess, hMods, sizeof(hMods), &cb, LIST_MODULES_ALL))
+	{
+		char szModName[MAX_PATH] = { NULL };
+		for (int i = 0; i < cb / sizeof(HMODULE); i++)
 		{
-			char szModName[MAX_PATH] = { NULL };
-			for (int i = 0; i < cb / sizeof(HMODULE); i++)
+			GetModuleBaseNameA(hProcess, hMods[i], szModName, MAX_PATH);
+			if (!ModuleName->CompareTo(gcnew String(szModName)))
 			{
-				GetModuleBaseNameA(hProcess, hMods[i], szModName, MAX_PATH);
-				if (!ModuleName->CompareTo(gcnew String(szModName)))
-				{
-					Global::MainForm->textBox3->Text = p->Id.ToString();
-					Global::MainForm->textBox4->Text = String::Format("{0:x}", (uint64_t)hMods[i]);
-					Global::MainForm->textBox5->Text = ((uint64)hProcess).ToString();
-					Base = (uint64_t)hMods[i];
-					return true;
-				}
+				Global::MainForm->textBox3->Text = Pid.ToString();
+				Global::MainForm->textBox4->Text = String::Format("{0:x}", (uint64_t)hMods[i]);
+				Global::MainForm->textBox5->Text = ((uint64)hProcess).ToString();
+				Base = (uint64_t)hMods[i];
+				return true;
 			}
 		}
-		else
-		{
-			Console::WriteLine("EnumProcessModulesEx Error: "+(int)GetLastError());
-		}
 	}
-	Console::WriteLine("Process or Module not found");
+	else
+	{
+		Console::WriteLine("EnumProcessModulesEx Error: " + (int)GetLastError());
+	}
+	Console::WriteLine("Module not found");
 	return false;
 }
 
