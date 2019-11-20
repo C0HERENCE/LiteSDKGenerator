@@ -34,7 +34,12 @@ System::Void Main::Main_Load(System::Object^ sender, System::EventArgs^ e)
 {
 	textBox1->Text = ManagedStr(ProcessName);
 	textBox2->Text = ManagedStr(MoudleName);
-	Global::GameMemory->Init();
+	bool status = Global::GameMemory->Init();
+	if (!status)
+	{
+		MessageBox::Show("Game not Found!");
+		Application::Exit();
+	}
 	Global::Names->Init(Global::GameMemory->GetBase() + Off::GNames);
 	Global::Objects->Init(Global::GameMemory->GetBase() + Off::FUObjectArray);
 	Console::WriteLine("GNames: 0x{0:x}\nNamesNum: {1}", Global::Names->GetAddress(), Global::Names->GetNamesNum());
@@ -152,11 +157,6 @@ System::Void Main::btnAutoUpdate_Click(System::Object^ sender, System::EventArgs
 				break;
 			}
 		}
-	}
-	for (auto p : searchingString)
-	{
-		//Console::Write("Address: {0:X} ", p.second);
-		//Console::WriteLine(ManagedStr(p.first));
 	}
 	Console::WriteLine("Auto Update Result:\n");
 	int next, enumNames, array_dim, element_size, offset, property_flag, superfield, property_size, children, function_flags, func, uproperty_size;

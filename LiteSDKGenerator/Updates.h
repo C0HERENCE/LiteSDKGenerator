@@ -22,23 +22,23 @@ namespace Updates
 		static const uint64 number = 0x0;
 		static const uint64 comparison_id = 0x4;
 		// UField
-		static const uint64 next = 0x30; // Vector.X = *Vector.Y
+		static const uint64 next = 0x30;
 		// UEnum
-		static const uint64 enumNames = 0x48; // ETextGender
+		static const uint64 enumNames = 0x48;
 		// UStruct
-		static const uint64 superfield = 0x90; // Engine.Pawn = *Engine.Actor
-		static const uint64 property_size = 0x48; // Vector = 12;
-		static const uint64 children = 0x38; // Vector = *Vector.X
+		static const uint64 superfield = 0x90;
+		static const uint64 property_size = 0x48;
+		static const uint64 children = 0x38;
 		// UFunction
-		static const uint64 func = 0xb8; // WasRecentlyRendered 0x7FF6204410A0?
-		static const uint64 function_flags = 0xd8; // WasRecentlyRendered = 0x54020401
+		static const uint64 func = 0xb8;
+		static const uint64 function_flags = 0xd8;
 		// UProperty
-		static const uint64 array_dim = 0x38; // Vector.X = 1
-		static const uint64 element_size = 0x3c; // Vector.X = 4
-		static const uint64 offset = 0x4c; // Vector.Y = 4
-		static const uint64 property_flag = 0x40; // Vector.Y = 0x41000205 0x180010
+		static const uint64 array_dim = 0x38;
+		static const uint64 element_size = 0x3c;
+		static const uint64 offset = 0x4c;
+		static const uint64 property_flag = 0x40;
 
-		static const uint64 uproperty_size = 0x78; // UStruct(CoreUObject.Property) = ?
+		static const uint64 uproperty_size = 0x78;
 	};
 
 	class Dec

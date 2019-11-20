@@ -2,15 +2,38 @@
 
 bool Memory::Init()
 {
+	HANDLE hToken = nullptr;
+	LUID luid;
+
+	if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken)) return FALSE;
+	if (!LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &luid)) return FALSE;
+
+	TOKEN_PRIVILEGES tokenPriv;
+	tokenPriv.PrivilegeCount = 1;
+	tokenPriv.Privileges[0].Luid = luid;
+	tokenPriv.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+	if (!AdjustTokenPrivileges(hToken, FALSE, &tokenPriv, sizeof(TOKEN_PRIVILEGES), NULL, NULL))
+	{
+		Console::WriteLine("SeDebugPrivilege Error: " + (int)GetLastError());
+		return false;
+	}
+
 	HWND hWnd = FindWindow(Settings::WindowsClass.c_str(), Settings::WindowsCaption.c_str());
 	DWORD Pid = 0;
 	GetWindowThreadProcessId(hWnd, &Pid);
 	if (Pid == 0)
 	{
-		Console::WriteLine("Process not found");
+		Console::WriteLine("GetWindowThreadProcessId Error: " + (int)GetLastError());
 		return false;
 	}
 	hProcess = OpenProcess(PROCESS_ALL_ACCESS, false, Pid);
+	if (hProcess == 0)
+	{
+		Console::WriteLine("OpenProcess Error: " + (int)GetLastError());
+		return false;
+	}
+
 	HMODULE hMods[512];
 	DWORD cb;
 	if (EnumProcessModulesEx(hProcess, hMods, sizeof(hMods), &cb, LIST_MODULES_ALL))
@@ -32,6 +55,7 @@ bool Memory::Init()
 	else
 	{
 		Console::WriteLine("EnumProcessModulesEx Error: " + (int)GetLastError());
+		return false;
 	}
 	Console::WriteLine("Module not found");
 	return false;
