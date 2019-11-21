@@ -1,5 +1,5 @@
 ```cpp
-  gimme stars || forks
+  gimme stars || forks 😀
 ```
 # LiteSDKGenerator
 PUBG Lite SDK External Generator
