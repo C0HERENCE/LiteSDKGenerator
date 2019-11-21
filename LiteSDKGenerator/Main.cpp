@@ -87,6 +87,7 @@ System::Void Main::btnDumpSDK_Click(System::Object^ sender, System::EventArgs^ e
 System::Void Main::btnTest_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	Console::WriteLine(String::Format("Name 101: {0}", ManagedStr(Global::Names->GetById(101))));
+	Console::WriteLine(String::Format("GObject Address : {0:X}", Global::Objects->GetAddress()));
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -108,16 +109,17 @@ Void Main::btnFindGName_Click(System::Object^ sender, System::EventArgs^ e)
 		+ "Off::GNames" + "\n"
 		+ "Off::chunksize");
 	Console::WriteLine("Finding static GNames from offset: {0:X}, chunksize = {1:X}", Global::GameMemory->GetBase() + Off::GNames, Off::chunksize);
-	for (int i = 0; i < 0x50000; i++)
+	for (int i = -0x50000; i <= 0x50000; i++)
 	{
 		uint64 GNamesPtr = Global::GameMemory->Read64(Global::GameMemory->GetBase() + Off::GNames + i * 4);
 		Global::Names->SetBase(GNamesPtr);
 		if (Global::Names->GetById(1) == "ByteProperty")
 		{
-			Console::WriteLine(String::Format("Found static GNames at offset: {0:X}", i * 4));
-			break;
+			Console::WriteLine(String::Format("Found static GNames at offset: {0:X} , step = {1}", i * 4 , i));
+			return;
 		}
 	}
+	Console::WriteLine("Couldn't found");
 }
 
 
