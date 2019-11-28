@@ -9,8 +9,6 @@ using namespace LiteSDKGenerator;
 using namespace Updates;
 using namespace Settings;
 
-
-
 std::string managedStrToNative(System::String^ sysstr);
 
 std::string managedStrToNative(System::String^ sysstr)
@@ -246,9 +244,9 @@ System::Void Main::btnAutoUpdate_Click(System::Object^ sender, System::EventArgs
 			break;
 		}
 	}
-	for (int i = 0x28; i < 0xa0; i += 4)
+	for (int i = 0x24; i < 0xe0; i += 4)
 	{
-		if (Global::GameMemory->Read64(searchingString["ScriptStruct CoreUObject.Vector"] + i) == 12)
+		if (Global::GameMemory->Read32(searchingString["ScriptStruct CoreUObject.Vector"] + i) == 12)
 		{
 			property_size = i;
 			break;

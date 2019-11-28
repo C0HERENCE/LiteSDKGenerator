@@ -8,37 +8,37 @@ namespace Updates
 	{
 	public:
 		// Main
-		static const uint64 GNames = 0x46216b0;
-		static const uint64 FUObjectArray = 0x446DB80-0x10;
+		static const uint64 GNames = 0x4669C10;
+		static const uint64 FUObjectArray = 0x454ea60-0x10;
 		//GNames
-		static const uint64 chunksize = 0x40c4;
-		static const uint64 static_gnames = 0x632B0;
+		static const uint64 chunksize = 0x3F94;
+		static const uint64 static_gnames = 0x8BC30;
 		// UObject
-		static const uint64 ulcass = 0x10;
-		static const uint64 internal_id = 0x24;
-		static const uint64 name = 0x8;
-		static const uint64 outer = 0x18;
+		static const uint64 ulcass = 0x8;
+		static const uint64 internal_id = 0x18;
+		static const uint64 name = 0x10;
+		static const uint64 outer = 0x20;
 		// FName
 		static const uint64 number = 0x0;
 		static const uint64 comparison_id = 0x4;
 		// UField
-		static const uint64 next = 0x28;
+		static const uint64 next = 0x30;
 		// UEnum
-		static const uint64 enumNames = 0x40;
+		static const uint64 enumNames = 0x48;
 		// UStruct
-		static const uint64 superfield = 0x78;
-		static const uint64 property_size = 0x40;
+		static const uint64 superfield = 0x88;
+		static const uint64 property_size = 0x38;
 		static const uint64 children = 0x58;
 		// UFunction
-		static const uint64 func = 0xD0;
-		static const uint64 function_flags = 0xC4;
+		static const uint64 func = 0xB0;
+		static const uint64 function_flags = 0xD0;
 		// UProperty
-		static const uint64 array_dim = 0x30;
-		static const uint64 element_size = 0x34;
-		static const uint64 offset = 0x44;
-		static const uint64 property_flag = 0x38;
+		static const uint64 array_dim = 0x38;
+		static const uint64 element_size = 0x3C;
+		static const uint64 offset = 0x4C;
+		static const uint64 property_flag = 0x40;
 
-		static const uint64 uproperty_size = 0x70;
+		static const uint64 uproperty_size = 0x78;
 	};
 
 	class Dec
@@ -48,30 +48,30 @@ namespace Updates
 		static uint64 objobjects(uint64 v7)
 		{
 			uint64 v17;
-			LODWORD(v17) = __ROL4__(__ROL4__(v7 - 1369635907, 16) + 1397148004, 16) ^ 0x9E9C5A7;
-			HIDWORD(v17) = __ROR4__(__ROR4__(HIDWORD(v7) + 327993064, 8) + 919817967, 8) ^ 0x77B977F9;
+			LODWORD(v17) = (~(v7 - 1539350684) + 1755220623) ^ 0x8222160C;
+			HIDWORD(v17) = (~(~HIDWORD(v7) + 1245697400) + 584263515) ^ 0x3ED032D;
 			return v17;
 		}
-		static int32 internal_id(uint32 v2)
+		static int32 internal_id(uint32 v256)
 		{
-			return __ROL4__(v2 ^ 0xE882B26A, 3) ^ (__ROL4__(v2 ^ 0xE882B26A, 3) << 16) ^ 0xE85ADD15;
+			return __ROL4__(v256 ^ 0x9B04FC7F, 10) ^ (__ROL4__(v256 ^ 0x9B04FC7F, 10) << 16) ^ 0x7B67D5A7;
 		}
-		static uint64 uclass(uint64 v6)
+		static uint64 uclass(uint64 v24)
 		{
-			return __ROR8__(v6 ^ 0xFDD4DDB937875595ui64, 11) ^ (__ROR8__(v6 ^ 0xFDD4DDB937875595ui64, 11) << 32) ^ 0x26C7FBC969BB61A5i64;
+			return __ROL8__(v24 ^ 0x389317838CF0AC9Ei64, 28) ^ (__ROL8__(v24 ^ 0x389317838CF0AC9Ei64, 28) << 32) ^ 0x8289130F79D4E572ui64;
 		}
-		static uint64 outer(uint64 v18)
+		static uint64 outer(uint64 v30)
 		{
-			return __ROL8__(v18 ^ 0xA47650BD9B4D3DFBui64, 2) ^ (__ROL8__(v18 ^ 0xA47650BD9B4D3DFBui64, 2) << 32) ^ 0x1AAAD97F047CB5FFi64;
+			return __ROR8__(v30 ^ 0x7CBA09BDCD309DC3i64, 21) ^ (__ROR8__(v30 ^ 0x7CBA09BDCD309DC3i64, 21) << 32) ^ 0xB41286678E61FB0Aui64;
 		}
 		//FName
-		static int32 comparison_id(uint32 v6)
+		static int32 comparison_id(uint32 v252)
 		{
-			return __ROR4__(v6 ^ 0x6C1E4D14, 1) ^ (__ROR4__(v6 ^ 0x6C1E4D14, 1) << 16) ^ 0x210A6C1E;
+			return __ROL4__(v252 ^ 0xE570B9D4, 16) ^ (__ROL4__(v252 ^ 0xE570B9D4, 16) << 16) ^ 0xE06F4CF0;
 		}
-		static int32 number(uint32 v10)
+		static int32 number(uint32 v249)
 		{
-			return __ROR4__(v10 ^ 0x37875594, 11) ^ (__ROR4__(v10 ^ 0x37875594, 11) << 16) ^ 0x81F61A4;
+			return __ROR4__(v249 ^ 0x4CF0AC9F, 4) ^ (__ROR4__(v249 ^ 0x4CF0AC9F, 4) << 16) ^ 0x5CA4E570;
 		}
 	};
 }
