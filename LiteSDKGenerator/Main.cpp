@@ -82,6 +82,19 @@ System::Void Main::btnDumpSDK_Click(System::Object^ sender, System::EventArgs^ e
 	}
 }
 
+System::Void Main::btnNamesDump_Click(System::Object^ sender, System::EventArgs^ e)
+{
+	if (folderBrowserDialog1->ShowDialog() == Windows::Forms::DialogResult::OK)
+	{
+		std::string OutputDirectory = NativeStr(folderBrowserDialog1->SelectedPath + "\\");
+		Global::Generator->DumpNamesTxt(OutputDirectory);
+		if (MessageBox::Show("Show Files In Explorer?", "Dump Finished", MessageBoxButtons::YesNo) == ::DialogResult::Yes)
+		{
+			Process::Start(ManagedStr(OutputDirectory));
+		}
+	}
+}
+
 System::Void Main::btnTest_Click(System::Object^ sender, System::EventArgs^ e)
 {
 	Console::WriteLine(String::Format("Name 101: {0}", ManagedStr(Global::Names->GetById(101))));

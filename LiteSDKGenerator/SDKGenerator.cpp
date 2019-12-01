@@ -27,6 +27,20 @@ void SDKGenerator::DumpObjectsTxt(std::string path)
 	o.close();
 }
 
+void SDKGenerator::DumpNamesTxt(std::string path)
+{
+	Global::MainForm->progressBar1->Maximum = 300000;
+	std::ofstream o(path + Settings::NamesFileName);
+	tfm::format(o, "%s\n", Settings::AuthorNotes);
+	for (int i = 0; i < 300000; i++)
+	{
+		Global::MainForm->progressBar1->Value = i + 1;
+		auto name = Global::Names->GetById(i);
+		o << tfm::format("[%06d] %s\n", i, name);
+	}
+	o.close();
+}
+
 void SDKGenerator::DumpSDK(std::string path,bool oneFile)
 {
 	ProcessPackages(path, oneFile);

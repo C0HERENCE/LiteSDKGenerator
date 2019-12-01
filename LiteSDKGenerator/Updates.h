@@ -85,6 +85,7 @@ namespace Settings
 	static std::string SDKFolderName = "PUBGLITE_SDK";
 	static std::string SDKAllFileName = "SDK_All.cpp";
 	static std::string GObjectsFileName = "ObjectsDump.txt";
+	static std::string NamesFileName = "NamesDump.txt";
 	static std::string AuthorNotes = "By COHERENCE";
 	static std::string OutPutString = 
 R"(// UField
