@@ -8,16 +8,16 @@ namespace Updates
 	{
 	public:
 		// Main
-		static const uint64 GNames = 0x4669C10;
-		static const uint64 FUObjectArray = 0x454ea60-0x10;
+		static const uint64 GNames = 0x46daa30L;
+		static const uint64 FUObjectArray = 0x4513CD0;
 		//GNames
-		static const uint64 chunksize = 0x3F94;
-		static const uint64 static_gnames = 0x8BC30;
+		static const uint64 chunksize = 0x40e0;
+		static const uint64 static_gnames = 0xFFFFFFFFFFECB538;
 		// UObject
-		static const uint64 ulcass = 0x8;
-		static const uint64 internal_id = 0x18;
-		static const uint64 name = 0x10;
-		static const uint64 outer = 0x20;
+		static const uint64 ulcass = 0x28;
+		static const uint64 internal_id = 0x10;
+		static const uint64 name = 0x8;
+		static const uint64 outer = 0x18;
 		// FName
 		static const uint64 number = 0x0;
 		static const uint64 comparison_id = 0x4;
@@ -48,30 +48,30 @@ namespace Updates
 		static uint64 objobjects(uint64 v7)
 		{
 			uint64 v17;
-			LODWORD(v17) = (~(v7 - 1539350684) + 1755220623) ^ 0x8222160C;
-			HIDWORD(v17) = (~(~HIDWORD(v7) + 1245697400) + 584263515) ^ 0x3ED032D;
+			LODWORD(v17) = __ROL4__(__ROL4__(v7, 16) + 2096893124, 16) ^ 0x7CFC0CC4;
+			HIDWORD(v17) = __ROR4__(__ROR4__(HIDWORD(v7), 8) + 2068020036, 8) ^ 0x84BC84BC;
 			return v17;
 		}
-		static int32 internal_id(uint32 v256)
+		static int32 internal_id(uint32 v248)
 		{
-			return __ROL4__(v256 ^ 0x9B04FC7F, 10) ^ (__ROL4__(v256 ^ 0x9B04FC7F, 10) << 16) ^ 0x7B67D5A7;
+			return __ROL4__(v248 ^ 0x4DD4BB1D, 1) ^ (__ROL4__(v248 ^ 0x4DD4BB1D, 1) << 16) ^ 0xC9F69B5F;
 		}
-		static uint64 uclass(uint64 v24)
+		static uint64 uclass(uint64 v6)
 		{
-			return __ROL8__(v24 ^ 0x389317838CF0AC9Ei64, 28) ^ (__ROL8__(v24 ^ 0x389317838CF0AC9Ei64, 28) << 32) ^ 0x8289130F79D4E572ui64;
+			return __ROR8__(v6 ^ 0xC31F8BC077812E5i64, 9) ^ (__ROR8__(v6 ^ 0xC31F8BC077812E5i64, 9) << 32) ^ 0xBA2A0887923CD98Eui64;
 		}
-		static uint64 outer(uint64 v30)
+		static uint64 outer(uint64 v17)
 		{
-			return __ROR8__(v30 ^ 0x7CBA09BDCD309DC3i64, 21) ^ (__ROR8__(v30 ^ 0x7CBA09BDCD309DC3i64, 21) << 32) ^ 0xB41286678E61FB0Aui64;
+			return v17 ^ 0x1A68193902D7654Ai64 ^ ((v17 ^ 0x1A68193902D7654Ai64) << 32) ^ 0xE6629481E8442DAAui64;
 		}
 		//FName
-		static int32 comparison_id(uint32 v252)
+		static int32 comparison_id(uint32 v10)
 		{
-			return __ROL4__(v252 ^ 0xE570B9D4, 16) ^ (__ROL4__(v252 ^ 0xE570B9D4, 16) << 16) ^ 0xE06F4CF0;
+			return  __ROR4__(v10 ^ 0x5B827462, 4) ^ (__ROR4__(v10 ^ 0x5B827462, 4) << 16) ^ 0x68B90FAD;
 		}
-		static int32 number(uint32 v249)
+		static int32 number(uint32 v6)
 		{
-			return __ROR4__(v249 ^ 0x4CF0AC9F, 4) ^ (__ROR4__(v249 ^ 0x4CF0AC9F, 4) << 16) ^ 0x5CA4E570;
+			return __ROR4__(v6 ^ 0xFB43D094, 8) ^ (__ROR4__(v6 ^ 0xFB43D094, 8) << 16) ^ 0xC1DC4D68;
 		}
 	};
 }

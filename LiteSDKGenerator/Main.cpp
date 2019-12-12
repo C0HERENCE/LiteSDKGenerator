@@ -120,7 +120,7 @@ Void Main::btnFindGName_Click(System::Object^ sender, System::EventArgs^ e)
 		+ "Off::GNames" + "\n"
 		+ "Off::chunksize");
 	Console::WriteLine("Finding static GNames from offset: {0:X}, chunksize = {1:X}", Global::GameMemory->GetBase() + Off::GNames, Off::chunksize);
-	for (int i = -0x50000; i <= 0x50000; i++)
+	for (int64 i = -0x50000; i <= 0x50000; i++)
 	{
 		uint64 GNamesPtr = Global::GameMemory->Read64(Global::GameMemory->GetBase() + Off::GNames + i * 4);
 		Global::Names->SetBase(GNamesPtr);
