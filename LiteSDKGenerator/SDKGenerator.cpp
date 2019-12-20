@@ -76,15 +76,23 @@ void ProcessPackages(std::string path,bool oneFile)
 	Global::MainForm->progressBar1->Maximum = (int)packageObjects.size();
 	Global::MainForm->progressBar1->Value = 0;
 	std::ofstream o;
+	bool authornotes = true;
 	for (auto package : packageObjects)
 	{
 		if (oneFile&&!o.is_open())
 		{
 			o.open(path + Settings::SDKAllFileName, std::ofstream::out | std::ofstream::app);
+			if (authornotes)
+			{
+				tfm::format(o, "%s\n", Settings::AuthorNotes);
+				authornotes = false;
+			}
+
 		}
 		if (!oneFile)
 		{
 			o.open(path + package.second.GetPackageName() + ".cpp", std::ofstream::out | std::ofstream::app);
+			tfm::format(o, "%s\n", Settings::AuthorNotes);
 		}
 		package.second.Save(o);
 		Global::MainForm->progressBar1->Value += 1;

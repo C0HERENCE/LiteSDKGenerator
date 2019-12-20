@@ -5,8 +5,7 @@ using namespace Updates;
 
 void ObjectsStore::Init(uint64 address)
 {
-	objObjects = Dec::objobjects(Global::GameMemory->Read64(address + 0x10 + 0x0));
-	objCounts = Global::GameMemory->Read32(address + 0x10 + 0x10);
+	objObjects = Dec::objobjects(Global::GameMemory->Read64(address));
 	objCounts = Global::GameMemory->Read32(address + 0x10);
 }
 

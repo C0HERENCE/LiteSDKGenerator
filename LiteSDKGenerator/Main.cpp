@@ -39,7 +39,7 @@ System::Void Main::Main_Load(System::Object^ sender, System::EventArgs^ e)
 		Application::Exit();
 	}
 	Global::Names->Init(Global::GameMemory->GetBase() + Off::GNames);
-	Global::Objects->Init(Global::GameMemory->GetBase() + Off::FUObjectArray);
+	Global::Objects->Init(Global::GameMemory->GetBase() + Off::ObjObjects);
 	Console::WriteLine("GNames: 0x{0:x}\nNamesNum: {1}", Global::Names->GetAddress(), Global::Names->GetNamesNum());
 	Console::WriteLine("GObjects: 0x{0:x}\nObjectsNum: {1}", Global::Objects->GetAddress(), Global::Objects->GetObjectsNum());
 }
