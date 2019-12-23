@@ -311,6 +311,25 @@ std::string UEObject::GetFullName() const
 	return std::string("(null)");
 }
 
+std::string UEObject::GetFullPath() const
+{
+	if (GetClass().IsValid())
+	{
+		std::string temp;
+
+		for (auto outer = GetOuter(); outer.IsValid(); outer = outer.GetOuter())
+		{
+			temp = outer.GetName() + "." + temp;
+		}
+
+		temp += GetName();
+
+		return temp;
+	}
+
+	return std::string("(null)");
+}
+
 std::string UEObject::GetNameCPP() const
 {
 	std::string name;

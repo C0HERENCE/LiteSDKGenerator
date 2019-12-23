@@ -30,8 +30,8 @@ void Main(array<String^>^ args)
 
 System::Void Main::Main_Load(System::Object^ sender, System::EventArgs^ e)
 {
-	textBox1->Text = ManagedStr(ProcessName);
-	textBox2->Text = ManagedStr(MoudleName);
+	Global::LogLine("Process: " + ManagedStr(ProcessName));
+	Global::LogLine("Module: " + ManagedStr(MoudleName));
 	bool status = Global::GameMemory->Init();
 	if (!status)
 	{
@@ -40,8 +40,8 @@ System::Void Main::Main_Load(System::Object^ sender, System::EventArgs^ e)
 	}
 	Global::Names->Init(Global::GameMemory->GetBase() + Off::GNames);
 	Global::Objects->Init(Global::GameMemory->GetBase() + Off::ObjObjects);
-	Console::WriteLine("GNames: 0x{0:x}\nNamesNum: {1}", Global::Names->GetAddress(), Global::Names->GetNamesNum());
-	Console::WriteLine("GObjects: 0x{0:x}\nObjectsNum: {1}", Global::Objects->GetAddress(), Global::Objects->GetObjectsNum());
+	Global::LogLine("GNames: {0:x}\nNamesNum: {1}", Global::Names->GetAddress(), Global::Names->GetNamesNum());
+	Global::LogLine("GObjects: {0:x}\nObjectsNum: {1}", Global::Objects->GetAddress(), Global::Objects->GetObjectsNum());
 }
 
 System::Void Main::Main_FormClosing(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e)
@@ -97,20 +97,19 @@ System::Void Main::btnNamesDump_Click(System::Object^ sender, System::EventArgs^
 
 System::Void Main::btnTest_Click(System::Object^ sender, System::EventArgs^ e)
 {
-	Console::WriteLine(String::Format("Name 101: {0}", ManagedStr(Global::Names->GetById(101))));
-	Console::WriteLine(String::Format("GObject Address : {0:X}", Global::Objects->GetAddress()));
-
+	Global::LogSplit();
+	Global::LogLine(String::Format("Name ID = 1001: {0}", ManagedStr(Global::Names->GetById(1001))));
 	for (int i = 0; i < 5; i++)
 	{
-		Console::WriteLine("Object Address: {0:X}", Global::Objects->GetById(i).GetAddress());
-		Console::WriteLine("Index ID: {0}", Global::Objects->GetById(i).GetIndex());
-		Console::Write("Name ID: {0} ", Global::Objects->GetById(i).GetComparisonIndex());
-		Console::WriteLine("Name: {0}", ManagedStr(Global::Names->GetById(Global::Objects->GetById(i).GetComparisonIndex())));
-		Console::Write("Class ID: {0} ", Global::Objects->GetById(i).GetClass().GetIndex());
-		Console::WriteLine("Name: {0}", ManagedStr(Global::Names->GetById(Global::Objects->GetById(Global::Objects->GetById(i).GetClass().GetIndex()).GetComparisonIndex())));
-		Console::Write("Outer ID: {0} ", Global::Objects->GetById(i).GetOuter().GetIndex());
-		Console::WriteLine("Name: {0}", ManagedStr(Global::Names->GetById(Global::Objects->GetById(Global::Objects->GetById(i).GetClass().GetIndex()).GetComparisonIndex())));
-		Console::WriteLine("");
+		Global::LogSplit();
+		Global::LogLine("Object Address: {0:X}", Global::Objects->GetById(i).GetAddress());
+		Global::LogLine("Index ID: {0}", Global::Objects->GetById(i).GetIndex());
+		Global::Log("Name ID: {0} ", Global::Objects->GetById(i).GetComparisonIndex());
+		Global::LogLine("Name: {0}", ManagedStr(Global::Names->GetById(Global::Objects->GetById(i).GetComparisonIndex())));
+		Global::Log("Class ID: {0} ", Global::Objects->GetById(i).GetClass().GetIndex());
+		Global::LogLine("Name: {0}", ManagedStr(Global::Names->GetById(Global::Objects->GetById(Global::Objects->GetById(i).GetClass().GetIndex()).GetComparisonIndex())));
+		Global::Log("Outer ID: {0} ", Global::Objects->GetById(i).GetOuter().GetIndex());
+		Global::LogLine("Name: {0}", ManagedStr(Global::Names->GetById(Global::Objects->GetById(Global::Objects->GetById(i).GetClass().GetIndex()).GetComparisonIndex())));
 	}
 }
 
@@ -119,18 +118,19 @@ Void Main::btnFindGName_Click(System::Object^ sender, System::EventArgs^ e)
 	MessageBox::Show("Make sure you've updated them in Updates.cpp:\n"
 		+ "Off::GNames" + "\n"
 		+ "Off::chunksize");
-	Console::WriteLine("Finding static GNames from offset: {0:X}, chunksize = {1:X}", Global::GameMemory->GetBase() + Off::GNames, Off::chunksize);
+	Global::LogSplit();
+	Global::LogLine("Finding static GNames from offset: {0:X}, chunksize = {1:X}", Global::GameMemory->GetBase() + Off::GNames, Off::chunksize);
 	for (int64 i = -0x50000; i <= 0x50000; i++)
 	{
 		uint64 GNamesPtr = Global::GameMemory->Read64(Global::GameMemory->GetBase() + Off::GNames + i * 4);
 		Global::Names->SetBase(GNamesPtr);
 		if (Global::Names->GetById(1) == "ByteProperty")
 		{
-			Console::WriteLine(String::Format("Found static GNames at offset: {0:X} , step = {1}", i * 4 , i));
+			Global::LogLine(String::Format("Found static GNames at offset: {0:X} , step = {1}", i * 4 , i));
 			return;
 		}
 	}
-	Console::WriteLine("Couldn't found");
+	Global::LogLine("Couldn't found");
 }
 
 
@@ -171,7 +171,8 @@ System::Void Main::btnAutoUpdate_Click(System::Object^ sender, System::EventArgs
 			}
 		}
 	}
-	Console::WriteLine("Auto Update Result:\n");
+	Global::LogSplit();
+	Global::LogLine("Auto Update Result:\n");
 	int next, enumNames, array_dim, element_size, offset, property_flag, superfield, property_size, children, function_flags, func, uproperty_size;
 	for (int i = 0x20; i < 0x50; i += 4)
 	{
@@ -291,5 +292,10 @@ System::Void Main::btnAutoUpdate_Click(System::Object^ sender, System::EventArgs
 		}
 	}
 	uproperty_size = Global::GameMemory->Read32(searchingString["Class CoreUObject.Property"] + property_size);
-	Console::Write(ManagedStr(OutPutString),next,enumNames,superfield,property_size,children,func,function_flags,array_dim,element_size,offset,property_flag,uproperty_size);
+	Global::Log(ManagedStr(OutPutString),next,enumNames,superfield,property_size,children,func,function_flags,array_dim,element_size,offset,property_flag,uproperty_size);
+}
+
+System::Void Main::btnUpdateUseful_Click(System::Object^ sender, System::EventArgs^ e)
+{
+	Global::Generator->DumpUseful();
 }

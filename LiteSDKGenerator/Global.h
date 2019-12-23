@@ -74,4 +74,34 @@ public:
 	static NamesStore^ Names = gcnew NamesStore();
 	static ObjectsStore^ Objects = gcnew ObjectsStore();
 	static SDKGenerator^ Generator = gcnew SDKGenerator();
+	static void LogLine(String^ text)
+	{
+		MainForm->LogBox->AppendText(text);
+		MainForm->LogBox->AppendText("\n");
+		MainForm->LogBox->ScrollToCaret();
+	}
+	static void LogLine(String^ format, ...array<Object^>^ args)
+	{
+		String^ text = String::Format(format, args);
+		MainForm->LogBox->AppendText(text);
+		MainForm->LogBox->AppendText("\n");
+		MainForm->LogBox->ScrollToCaret();
+	}
+	static void Log(String^ text)
+	{
+		MainForm->LogBox->AppendText(text);
+		MainForm->LogBox->ScrollToCaret();
+	}
+	static void Log(String^ format, ...array<Object^>^ args)
+	{
+		String^ text = String::Format(format, args);
+		MainForm->LogBox->AppendText(text);
+		MainForm->LogBox->ScrollToCaret();
+	}
+
+	static void LogSplit()
+	{
+		MainForm->LogBox->AppendText("--------------------------------------------------------\n");
+		MainForm->LogBox->ScrollToCaret();
+	}
 };

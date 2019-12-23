@@ -664,6 +664,8 @@ public:
 
 	std::string GetFullName() const;
 
+	std::string GetFullPath() const;
+
 	std::string GetNameCPP() const;
 
 	UEObject GetPackageObject() const;

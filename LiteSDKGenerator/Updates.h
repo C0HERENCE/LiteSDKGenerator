@@ -57,8 +57,7 @@ namespace Updates
 				((HIDWORD(v7) & 0xFFFF0000 | (unsigned __int16)__ROR2__(WORD2(v7) ^ HIWORD(v7), 8))
 					+ 49021485) >> 16,
 					8) << 16)) ^ 0xFD13FDD3;
-			HIDWORD(v19) = 0x1f9;
-			// edit here
+			HIDWORD(v19) = 0x1ab;// edit here
 			return v19;
 		}
 		static int32 internal_id(uint32 v2)
@@ -96,8 +95,8 @@ namespace Settings
 	static std::string GObjectsFileName = "ObjectsDump.txt";
 	static std::string NamesFileName = "NamesDump.txt";
 	static std::string AuthorNotes = "By COHERENCE\nSDK Generator: https://github.com/C0HERENCE/LiteSDKGenerator \n";
-	static std::string OutPutString = 
-R"(// UField
+	static std::string OutPutString =
+		R"(// UField
 static const uint64 next = 0x{0:X};
 // UEnum
 static const uint64 enumNames = 0x{1:X};
@@ -114,5 +113,5 @@ static const uint64 element_size = 0x{8:X};
 static const uint64 offset = 0x{9:X};
 static const uint64 property_flag = 0x{10:X};
 
-static const uint64 uproperty_size = 0x{11:X};)";
+static const uint64 uproperty_size = 0x{11:X};\n)";
 }

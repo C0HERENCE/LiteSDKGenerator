@@ -8,9 +8,10 @@ Package::Member CreateBitfieldPadding(size_t id, size_t offset, std::string type
 Package::Member CreatePadding(size_t id, size_t offset, size_t size, std::string reason);
 std::string BuildMethodSignature(const Package::Method& m, const Package::Class& c, bool inHeader);
 
-
 void SDKGenerator::DumpObjectsTxt(std::string path)
 {
+	Global::LogSplit();
+	Global::LogLine("Exporting Objects Dump...");
 	Global::MainForm->progressBar1->Maximum = Global::Objects->GetObjectsNum();
 	std::ofstream o(path + Settings::GObjectsFileName);
 	tfm::format(o, "%s\n", Settings::AuthorNotes);
@@ -29,6 +30,8 @@ void SDKGenerator::DumpObjectsTxt(std::string path)
 
 void SDKGenerator::DumpNamesTxt(std::string path)
 {
+	Global::LogSplit();
+	Global::LogLine("Exporting Names Dump...");
 	Global::MainForm->progressBar1->Maximum = 300000;
 	std::ofstream o(path + Settings::NamesFileName);
 	tfm::format(o, "%s\n", Settings::AuthorNotes);
@@ -48,9 +51,17 @@ void SDKGenerator::DumpSDK(std::string path,bool oneFile)
 
 void ProcessPackages(std::string path,bool oneFile)
 {
+	Global::LogSplit();
+	if (oneFile)
+		Global::LogLine("Exporting SDK in one file...");
+	else
+		Global::LogLine("Exporting SDK in separated files...");
+
 	const auto sdkPath = path + Settings::SDKFolderName;
 	std::unordered_map<uint64_t, Package> packageObjects;
 	Global::MainForm->progressBar1->Maximum = Global::Objects->GetObjectsNum();
+
+	Global::LogLine("Getting Packages...");
 	for (int i = 0; i < Global::Objects->GetObjectsNum(); i++)
 	{
 		auto obj = Global::Objects->GetById(i);
@@ -61,7 +72,9 @@ void ProcessPackages(std::string path,bool oneFile)
 			packageObjects[packageAddr] = Package(packageAddr);
 		}
 	}
-	Console::WriteLine("Packages Count: {0}", packageObjects.size());
+	Global::LogLine("Packages Count: {0}", packageObjects.size());
+
+	Global::LogLine("Getting Members...");
 	Global::MainForm->progressBar1->Maximum = Global::Objects->GetObjectsNum();
 	for (int i = 0; i < Global::Objects->GetObjectsNum(); i++)
 	{
@@ -73,6 +86,7 @@ void ProcessPackages(std::string path,bool oneFile)
 			packageObjects[packageAddr].Process(obj);
 		}
 	}
+	Global::LogLine("Output...");
 	Global::MainForm->progressBar1->Maximum = (int)packageObjects.size();
 	Global::MainForm->progressBar1->Value = 0;
 	std::ofstream o;
@@ -98,6 +112,102 @@ void ProcessPackages(std::string path,bool oneFile)
 		Global::MainForm->progressBar1->Value += 1;
 		o.close();
 	}
+}
+
+void SDKGenerator::DumpUseful()
+{
+	std::unordered_map<std::string, bool> names;
+	names =
+	{
+		std::pair<std::string,bool>("Engine.Actor.RootComponent",false),
+
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraWeapon.WeaponEntityComp",false),
+
+		std::pair<std::string,bool>("Engine.Character.Mesh",false),
+		std::pair<std::string,bool>("Gameplay.UAECharacter.bIsAI",false),
+		std::pair<std::string,bool>("Gameplay.UAECharacter.TeamID",false),
+		std::pair<std::string,bool>("Gameplay.UAECharacter.PlayerKey",false),
+		std::pair<std::string,bool>("Gameplay.UAECharacter.PlayerName",false),
+
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraBaseCharacter.Health",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraBaseCharacter.HealthStatus",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraBaseCharacter.SpectatedCount",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraBaseCharacter.CurrentVehicle",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraBaseCharacter.VehicleSeatIdx",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraBaseCharacter.bIsWeaponFiring",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraBaseCharacter.STCharacterMovement",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraBaseCharacter.LocalSimulateStates",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraBaseCharacter.WeaponManagerComponent",false),
+
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraPlayerCharacter.SkydivingComponent",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraPlayerCharacter.STPlayerController",false),
+
+		std::pair<std::string,bool>("ShadowTrackerExtra.WeaponAttachmentData.SwayMultiplier",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.WeaponAttachmentData.AnimationKickMultiplier",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.WeaponAttachmentData.RecoilMultiplierVertical",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.WeaponAttachmentData.MultipleFiringBulletsSpread",false),
+
+		std::pair<std::string,bool>("ShadowTrackerExtra.WeaponEntity.ArrTslWeaponAttachmentData",false),
+		
+		std::pair<std::string,bool>("ShadowTrackerExtra.ShootWeaponEntity.BulletFireSpeed",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.ShootWeaponEntity.bHasAutoFireMode",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.WeaponManagerComponent.CurrentWeaponReplicated",false),
+
+		std::pair<std::string,bool>("Engine.PrimitiveComponent.LastRenderTime",false),
+		std::pair<std::string,bool>("Engine.SceneComponent.RelativeLocation",false),
+		std::pair<std::string,bool>("Engine.SceneComponent.ComponentVelocity",false),
+
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraVehicleBase.VehicleShapeType",false),
+
+		std::pair<std::string,bool>("ShadowTrackerExtra.TslSkydiveComponent.FreefallVelocitySettings",false),
+		std::pair<std::string,bool>("Engine.CharacterMovementComponent.JumpZVelocity",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STCharacterMovementComponent.WalkSpeedCurveScale",false),
+		std::pair<std::string,bool>("ShadowTrackerExtra.STCharacterMovementComponent.MinWalkSpeedModifier",false),
+
+		std::pair<std::string,bool>("Engine.PlayerController.PlayerCameraManager",false),
+		std::pair<std::string,bool>("Engine.PlayerCameraManager.CameraCache",false),
+		std::pair<std::string,bool>("Engine.CameraCacheEntry.POV",false),
+		std::pair<std::string,bool>("Engine.MinimalViewInfo.Location",false),
+		std::pair<std::string,bool>("Engine.MinimalViewInfo.Rotation",false),
+		std::pair<std::string,bool>("Engine.MinimalViewInfo.FOV",false),
+
+		std::pair<std::string,bool>("ShadowTrackerExtra.STExtraPlayerController.STExtraBaseCharacter",false),					
+	};
+	Global::LogSplit();
+	Global::LogLine("Exporting useful offsets...");
+	Global::MainForm->progressBar1->Maximum = Global::Objects->GetObjectsNum();
+
+	int count = 0;
+	int total = names.size();
+	for (int i = 0; i < Global::Objects->GetObjectsNum(); i++)
+	{
+		Global::MainForm->progressBar1->Value = i + 1;
+		auto obj = Global::Objects->GetById(i);
+		if (!obj.IsValid())
+		{
+			continue;
+		}
+		std::string name = obj.GetFullPath();
+		if (names.count(name) == 1)
+		{
+			UEProperty prop = obj.Cast<UEProperty>();
+			Global::LogLine("static const uint64_t {0} = 0x{1:x}; // {2} -> {0}",gcnew String(prop.GetName().c_str()), prop.GetOffset(), gcnew String(prop.GetOuter().GetName().c_str()));
+			names[name] = true;
+		}
+	}
+	Global::LogSplit();
+	for (auto i : names)
+	{
+		if (i.second == true)
+		{
+			count++;
+		}
+		else
+		{
+			Global::LogLine("{0} Not Found", gcnew String(i.first.c_str()));
+		}
+	}
+	Global::LogLine("Found {0} offsets of {1}", count, total);
 }
 
 void Package::Process(UEObject obj)

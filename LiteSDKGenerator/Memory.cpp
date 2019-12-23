@@ -15,7 +15,7 @@ bool Memory::Init()
 
 	if (!AdjustTokenPrivileges(hToken, FALSE, &tokenPriv, sizeof(TOKEN_PRIVILEGES), NULL, NULL))
 	{
-		Console::WriteLine("SeDebugPrivilege Error: " + (int)GetLastError());
+		Global::LogLine("SeDebugPrivilege Error: " + (int)GetLastError());
 		return false;
 	}
 
@@ -24,13 +24,13 @@ bool Memory::Init()
 	GetWindowThreadProcessId(hWnd, &Pid);
 	if (Pid == 0)
 	{
-		Console::WriteLine("GetWindowThreadProcessId Error: " + (int)GetLastError());
+		Global::LogLine("GetWindowThreadProcessId Error: " + (int)GetLastError());
 		return false;
 	}
 	hProcess = OpenProcess(PROCESS_ALL_ACCESS, false, Pid);
 	if (hProcess == 0)
 	{
-		Console::WriteLine("OpenProcess Error: " + (int)GetLastError());
+		Global::LogLine("OpenProcess Error: " + (int)GetLastError());
 		return false;
 	}
 
@@ -44,9 +44,9 @@ bool Memory::Init()
 			GetModuleBaseNameA(hProcess, hMods[i], szModName, MAX_PATH);
 			if (!Settings::MoudleName.compare(szModName))
 			{
-				Global::MainForm->textBox3->Text = Pid.ToString();
-				Global::MainForm->textBox4->Text = String::Format("{0:x}", (uint64_t)hMods[i]);
-				Global::MainForm->textBox5->Text = ((uint64)hProcess).ToString();
+				Global::LogLine("PID: " + Pid.ToString());
+				Global::LogLine(String::Format("Base: {0:x}", (uint64_t)hMods[i]));
+				Global::LogLine("Handle: " + ((uint64)hProcess).ToString());
 				Base = (uint64_t)hMods[i];
 				return true;
 			}
@@ -54,10 +54,10 @@ bool Memory::Init()
 	}
 	else
 	{
-		Console::WriteLine("EnumProcessModulesEx Error: " + (int)GetLastError());
+		Global::LogLine("EnumProcessModulesEx Error: " + (int)GetLastError());
 		return false;
 	}
-	Console::WriteLine("Module not found");
+	Global::LogLine("Module not found");
 	return false;
 }
 

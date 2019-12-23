@@ -18,6 +18,7 @@ public:
 	void DumpObjectsTxt(std::string path);
 	void DumpNamesTxt(std::string path);
 	void DumpSDK(std::string path, bool OneFile);
+	void DumpUseful();
 };
 
 class Package
